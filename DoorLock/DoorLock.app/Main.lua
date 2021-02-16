@@ -12,6 +12,7 @@ local fs = require("Filesystem")
 local GUI = require("GUI")
 local unicode = require("Unicode")
 local system = require("System")
+local rs = "0"
 
 -- Get localization table dependent of current system language
 local localization = system.getCurrentScriptLocalization()
@@ -25,6 +26,15 @@ if system.getCurrentScript() ~= "/Applications/DoorLock.app/Main.lua" then
   shouldNotStart = true
   errorTable[currentErrorTablePos] = localization.errorMassiv.canWorkPropOnlyIfInApp
   currentErrorTablePos = currentErrorTablePos + 1
+end
+
+-- Check whatever the redstone card are present
+if component.isAvailable("redstone") == false then
+  errorTable[currentErrorTablePos] = localization.errorMassiv.redstoneCardNeeded
+  currentErrorTablePos = currentErrorTablePos + 1
+  shouldNotStart = true
+else
+  rs = component.redstone
 end
 
 -- Check whatever the required libraries are present
@@ -75,7 +85,6 @@ local paths = require("Paths")
 local kb = require("Keyboard")
 local txt = require("Text")
 local gpu = screen.getGPUProxy()
-local rs = "0"
 local GPUProxy = component.proxy(component.list("gpu")())
 local online = false
 
@@ -159,18 +168,6 @@ local authFailSide, authFailColor = sides.right, colors.yellow
 ----------------------------------------------------------------------
 
 -- GUI.alert(settingsFolder)
-
-
--- Check whatever the redstone card are present
-
-if component.isAvailable("redstone") == false then
-  errorTable[currentErrorTablePos] = localization.errorMassiv.redstoneCardNeeded
-  currentErrorTablePos = currentErrorTablePos + 1
-  shouldNotStart = true
-else
-  rs = component.redstone
-end
-
 
 if errorTable[1] ~= nil then
   GUI.alert(localization.errorMassiv.startInterrupted ,
