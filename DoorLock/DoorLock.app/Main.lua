@@ -479,8 +479,8 @@ function drawSetupUI()
       saveAndStartButton.onTouch = function()
           -- Convert the settings to values to save and prepare to checking.
           settings[1] = autoLockTimerInput.text
-          settings[2] = outputOnSuccAuthComboBox.selectedItem
-          settings[3] = outputOnWrongAuthComboBox.selectedItem
+          settings[2] = outputOnWrongAuthComboBox.selectedItem
+          settings[3] = outputOnSuccAuthComboBox.selectedItem
           settings[4] = putToAutoStartSwitch.state
           settings[5] = Split(passwordsInput.text, ",")
           settings[6] = Split(bioUsersInput.text, ",")
@@ -1486,4 +1486,3 @@ if shouldNotStart == false then
 else
   if windowSetup then windowSetup:remove() end
 end
-
