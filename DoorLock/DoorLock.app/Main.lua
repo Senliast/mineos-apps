@@ -1,4 +1,4 @@
--- DoorLock v.1.0 by Senliast
+-- DoorLock v.1.1 by Senliast
 -- 
 -- This app is reborn of the CodeDoor app on older MineOS versions with some more
 -- functions additionally. CodeDoor uses old libraries that doesnt work on new
