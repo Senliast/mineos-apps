@@ -1,4 +1,5 @@
--- DoorLock v.1.1 by Senliast
+-- DoorLock v.1.2 by Senliast
+-- GitHub: https://github.com/Senliast/MineOSApps
 -- 
 -- This app is reborn of the CodeDoor app on older MineOS versions with some more
 -- functions additionally. CodeDoor uses old libraries that doesnt work on new
@@ -12,6 +13,7 @@ local fs = require("Filesystem")
 local GUI = require("GUI")
 local unicode = require("Unicode")
 local system = require("System")
+local number = require("Number")
 local rs = "0"
 
 -- Get localization table dependent of current system language
@@ -50,7 +52,12 @@ if shouldNotStart == false then
     local acceptButton = windowInstallLibs:addChild(GUI.button(2, 2, 24, 3, 0xFFFFFF, 0x555555, 0x880000, 0xFFFFFF, localization.OK))
     local cancelButton = windowInstallLibs:addChild(GUI.button(2, 2, 24, 3, 0xFFFFFF, 0x555555, 0x880000, 0xFFFFFF, localization.cancel))
     
-    installLibsText1.localX = 4
+	local mostLongStrLength = 0
+	
+	if unicode.len(installLibsText1.text) > mostLongStrLength then mostLongStrLength = unicode.len(installLibsText1.text) end
+	if unicode.len(installLibsText2.text) > mostLongStrLength then mostLongStrLength = unicode.len(installLibsText2.text) end
+	
+    installLibsText1.localX = number.round(windowInstallLibs.width / 2 - mostLongStrLength / 2)
     installLibsText1.localY = 4
     installLibsText2.localX = installLibsText1.localX
     installLibsText2.localY = installLibsText1.localY + 1
@@ -60,6 +67,9 @@ if shouldNotStart == false then
     cancelButton.localY = acceptButton.localY
     workspaceInstallLibs:draw()
     
+	windowInstallLibs.actionButtons.maximize.onTouch = function()
+	end
+	
     acceptButton.onTouch = function()
     fs.copy("/Applications/DoorLock.app/Resources/sides.lua", "/Libraries/sides.lua")
     fs.copy("/Applications/DoorLock.app/Resources/colors.lua", "/Libraries/colors.lua")
@@ -80,7 +90,6 @@ local event = require("Event")
 local screen = require("Screen")
 local colors = require("sides")
 local image = require("Image")
-local number = require("Number")
 local paths = require("Paths")
 local kb = require("Keyboard")
 local txt = require("Text")
@@ -285,7 +294,8 @@ function applySettings()
   trustedUser = settings[6]
 end
 
-
+-- Check if ALT is pressed.
+if kb.isKeyDown(56) or kb.isKeyDown(184) then setupShouldLoad = true end
 
 
 
@@ -294,14 +304,13 @@ end
 -- Add a new window to MineOS workspace
 local workspaceSetup, windowSetup, menu = system.addWindow(GUI.filledWindow(1, 1, 120, 40, 0xE1E1E1))
 
+windowSetup.localX = number.round(screen.getWidth() / 2 - windowSetup.width / 2)
+windowSetup.localY = number.round(screen.getHeight() / 2 - windowSetup.height / 2)
 
 -- Create callback function with resizing rules when window changes its' size
 
 windowSetup.actionButtons.maximize.onTouch = function()
 end
-
--- Check if ALT is pressed.
-if kb.isKeyDown(56) or kb.isKeyDown(184) then setupShouldLoad = true end
 
 if title == "" then title = localization.title end
 screen.setResolution(width, height)
@@ -436,8 +445,13 @@ function drawSetupUI()
         local cancelButton = windowUninstall:addChild(GUI.button(2, 2, 24, 3, 0xFFFFFF, 0x555555, 0x880000, 0xFFFFFF, localization.cancel))
   
     -- Calculate position and centrize objects
+	
+		local mostLongStrLength = 0
   
-        uninstallText1.localX = 4
+        if unicode.len(uninstallText1.text) > mostLongStrLength then mostLongStrLength = unicode.len(uninstallText1.text) end
+		if unicode.len(uninstallText2.text) > mostLongStrLength then mostLongStrLength = unicode.len(uninstallText2.text) end
+	
+		uninstallText1.localX = number.round(windowUninstall.width / 2 - mostLongStrLength / 2)
         uninstallText1.localY = 4
         uninstallText2.localX = uninstallText1.localX
         uninstallText2.localY = uninstallText1.localY + 1
@@ -447,6 +461,9 @@ function drawSetupUI()
         cancelButton.localY = acceptButton.localY
         workspaceUninstall:draw()
         
+		windowUninstall.actionButtons.maximize.onTouch = function()
+		end
+		
         acceptButton.onTouch = function()
       -- Remove program from autostart if set.
           local userSettings = system.getUserSettings()
@@ -1450,7 +1467,16 @@ if shouldNotStart == false then
       end
     
     -- Calculate objects position and centrize them...
-      greetingText1.localX = 30
+	  local mostLongStrLength = 0
+
+	  if unicode.len(greetingText1.text) > mostLongStrLength then mostLongStrLength = unicode.len(greetingText1.text) end
+	  if unicode.len(greetingText2.text) > mostLongStrLength then mostLongStrLength = unicode.len(greetingText2.text) end
+	  if unicode.len(greetingText3.text) > mostLongStrLength then mostLongStrLength = unicode.len(greetingText3.text) end
+	  if unicode.len(greetingText4.text) > mostLongStrLength then mostLongStrLength = unicode.len(greetingText4.text) end
+	  if unicode.len(greetingText5.text) > mostLongStrLength then mostLongStrLength = unicode.len(greetingText5.text) end
+	  if unicode.len(greetingText6.text) > mostLongStrLength then mostLongStrLength = unicode.len(greetingText6.text) end
+
+	  greetingText1.localX = number.round(windowSetup.width / 2 - mostLongStrLength / 2)
       greetingText1.localY = number.round(windowSetup.height / 2 - (greetingText1.height + greetingText2.height + greetingText3.height + greetingText4.height + greetingText5.height + greetingText6.height + 1) / 2)
       greetingText2.localX = greetingText1.localX
       greetingText2.localY = greetingText1.localY + 1

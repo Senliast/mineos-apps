@@ -61,6 +61,6 @@
 	noMatchesFound = "No matches found",
 	locking = "Locking...",
 	autolockIn = "Autolock in ",
-	lToLock = "Press L to lock.",
+	lToLock = "To lock immediatelly, press L.",
 	autoLockTimerStopped = "Autolock timer temporary stopped.",
 }
