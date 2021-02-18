@@ -14,7 +14,7 @@ local GUI = require("GUI")
 local unicode = require("Unicode")
 local system = require("System")
 local number = require("Number")
-local rs = "0"
+-- local rs = "0"
 
 -- Get localization table dependent of current system language
 local localization = system.getCurrentScriptLocalization()
