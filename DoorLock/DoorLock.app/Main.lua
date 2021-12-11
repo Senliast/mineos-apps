@@ -1,4 +1,4 @@
--- DoorLock v.1.2 by Senliast
+-- DoorLock v.1.3 by Senliast
 -- GitHub: https://github.com/Senliast/MineOSApps
 -- 
 -- This app is reborn of the CodeDoor app on older MineOS versions with some more
@@ -522,9 +522,8 @@ function drawSetupUI()
               screen.setResolution(width, height)
               saveSettings()
               applySettings()
+			  system.execute("/Applications/DoorLock.app/RestartApp.lua")
                windowSetup:remove()
-               workspace:draw()
-               workspace:start()
             else
             
             GUI.alert(localization.errorMassiv.startInterrupted,
@@ -1293,112 +1292,6 @@ drawActiveUI()
 
 local time1 = computer.uptime()
 
--- Prepare workspace and create event handlers. The main logic of the app is stored here.
-workspace.eventHandler = function(e1, e2, e3, e4, e5, e6, e7, e8)
-  -- Exit the app if space is pressed.
-  if kb.isKeyDown(57) then
-    screen.setResolution(origWidth, origHeight)
-    workspace:stop()
-  end
-   -- GUI.alert(safersGetInput(onlineSide)[2] )
-  -- Check whatever the code lock should be online
-  if safersGetInput(onlineSide)[2] > 0 or onlineSide == 6 then
-    offlineMessage(false)
-    lockOnce = false
-    -- GUI.alert(safersGetInput(forceUnlockSide)[2])
-    if safersGetInput(forceUnlockSide)[2] > 6 and sendingForceUnlockSignal == false then
-      if unlockOnce == false then
-      unlockOnce = true
-      authSucc()
-      text3D.text = " "
-      text4D.text = " "
-      keyPadButtonLD.hidden = false
-      workspace:draw()
-      end
-    else
-      if unlockOnce == true then
-        lock()
-        unlockOnce = false
-      end
-      
-      
-      
-      
-      -- Check whatever this computer itself sending the force unlock signal.
-      if locked == false and UIActive == false and autoLockTime ~= "0" and (safersGetInput(blockAutoLockTimerSide)[2] == 0 or blockAutoLockTimerSide == 6) then
-    -- Timer of the autolock feature. Most probably it could be done more easy but well...
-        if computer.uptime() - time1 < 1 then
-      
-        else
-          time1 = time1 + 1
-          autoLockTimer = autoLockTimer - 1
-        end
-      
-        text3D.text = localization.autolockIn .. autoLockTimer .. "."
-        text4D.text = localization.lToLock
-        workspace:draw()
-        
-    -- Lock once the timer is expired.
-        if autoLockTimer == 0 then
-          lock()
-          sendingForceUnlockSignal = false
-        end
-      else
-        -- if autoLockTime == "0" then GUI.alert(autoLockTime) end
-          
-          
-        if locked == false and autoLockTime == "0" then
-          -- GUI.alert("2")
-          text3D.text = localization.lToLock
-          text4D.text = " "
-        end
-        
-    -- Stop and reset the autolock timer if a corresponding signal has been put.
-        -- GUI.alert(safersGetInput(blockAutoLockTimerSide)[2])
-        if safersGetInput(blockAutoLockTimerSide)[2] > 0 then
-          text3D.text = localization.autoLockTimerStopped
-          
-        end
-        
-    -- Update display.
-        workspace:draw()
-        autoLockTimer = autoLockTime
-        time1 = computer.uptime()
-      end
-      
-      -- Check if the user, that touched the screen, is an allowed user for bio auth.
-      if e3 == "touch" and e5 > authFieldPart1.x and e5 < authFieldPart1.x + authFieldPart1.width and e6 > authFieldPart1.y and e6 < authFieldPart11.y and UIActive == true then
-        visualizeBioAuth()
-        local a1 = false
-        for key, value in pairs(trustedUser) do
-          if a1 == false then
-            if e8 == value then
-              sendingForceUnlockSignal = true
-              authSucc()
-              a1 = true
-              workspace:draw()
-            end
-          end
-        end
-        if a1 == false then authFail() end
-         -- GUI.alert(locked)
-      end
-    
-    
-    end
-  else
-    if lockOnce == false then
-      lockOnce = true
-      lock()
-    end
-    offlineMessage(true)
-  end
-
-  computer.pushSignal("system", "updateFileList")
-end
-
-
-
 -- Check whatever its the first start of the app, is settings present, apply them and start the program.
 if shouldNotStart == false then
   if not fs.exists(settingsFile) then
@@ -1437,7 +1330,6 @@ if shouldNotStart == false then
     end
   end
 end
-
 
 -- GUI.alert(setupShouldLoad)
 if shouldNotStart == false then
@@ -1506,8 +1398,122 @@ if shouldNotStart == false then
     pcall(rs.setOutput, authSuccSide, 0)
     pcall(rs.setOutput, authFailSide, 0)
     if forceUnlockSide ~= 6 then pcall(rs.setOutput, forceUnlockSide, 0) end
+	
+	
+	
+	-- Prepare workspace and create event handlers. The main logic of the app is stored here.
+	local mainLoop = event.addHandler(function()
+	  -- GUI.alert(safersGetInput(onlineSide)[2] )
+	  -- Check whatever the code lock should be online
+	  if safersGetInput(onlineSide)[2] > 0 or onlineSide == 6 then
+		offlineMessage(false)
+		lockOnce = false
+		-- GUI.alert(safersGetInput(forceUnlockSide)[2])
+		if safersGetInput(forceUnlockSide)[2] > 6 and sendingForceUnlockSignal == false then
+		  if unlockOnce == false then
+		  unlockOnce = true
+		  authSucc()
+		  text3D.text = " "
+		  text4D.text = " "
+		  keyPadButtonLD.hidden = false
+		  workspace:draw()
+		  end
+		else
+		  if unlockOnce == true then
+			lock()
+			unlockOnce = false
+		  end
+		  
+		  
+		  
+		  
+		  -- Check whatever this computer itself sending the force unlock signal.
+		  if locked == false and UIActive == false and autoLockTime ~= "0" and (safersGetInput(blockAutoLockTimerSide)[2] == 0 or blockAutoLockTimerSide == 6) then
+		-- Timer of the autolock feature. Most probably it could be done more easy but well...
+			if computer.uptime() - time1 < 1 then
+		  
+			else
+			  time1 = time1 + 1
+			  autoLockTimer = autoLockTimer - 1
+			end
+		  
+			text3D.text = localization.autolockIn .. number.round(tonumber(autoLockTimer)) .. "."
+			text4D.text = localization.lToLock
+			workspace:draw()
+			
+		-- Lock once the timer is expired.
+			if autoLockTimer == 0 then
+			  lock()
+			  sendingForceUnlockSignal = false
+			end
+		  else
+			-- if autoLockTime == "0" then GUI.alert(autoLockTime) end
+			  
+			  
+			if locked == false and autoLockTime == "0" then
+			  -- GUI.alert("2")
+			  text3D.text = localization.lToLock
+			  text4D.text = " "
+			end
+			
+		-- Stop and reset the autolock timer if a corresponding signal has been put.
+			-- GUI.alert(safersGetInput(blockAutoLockTimerSide)[2])
+			if safersGetInput(blockAutoLockTimerSide)[2] > 0 then
+			  text3D.text = localization.autoLockTimerStopped
+			  
+			end
+			
+		-- Update display.
+			workspace:draw()
+			autoLockTimer = autoLockTime
+			time1 = computer.uptime()
+		  end		
+		
+		end
+	  else
+		if lockOnce == false then
+		  lockOnce = true
+		  lock()
+		end
+		offlineMessage(true)
+	  end
+
+	end, 0.1)
+	
+	-- Check if the user, that touched the screen, is an allowed user for bio auth.
+	local touchListener = event.addHandler(function(e1, e2, e3, e4, e5, e6)
+	  if e1 == "touch" and e3 > authFieldPart1.x and e3 < authFieldPart1.x + authFieldPart1.width and e4 > authFieldPart1.y and e4 < authFieldPart11.y and UIActive == true then
+		visualizeBioAuth()
+		local a1 = false
+		for key, value in pairs(trustedUser) do
+		  if a1 == false then
+			if e6 == value then
+			  sendingForceUnlockSignal = true
+			  authSucc()
+			  a1 = true
+			  workspace:draw()
+			end
+		  end
+		end
+		if a1 == false then authFail() end
+		 -- GUI.alert(locked)
+	  end
+	end)
+	
+	-- Exit the app if space is pressed.
+	event.addHandler(function(e1, e2, e3, e4)
+	  if e1 == "key_down" and e4 == 57 then
+		event.removeHandler(mainLoop)
+		event.removeHandler(touchListener)
+		screen.setResolution(origWidth, origHeight)
+		workspace:stop()
+	  end
+	end)
+
+	
     workspace:draw()
     workspace:start()
+
   end
 else
   if windowSetup then windowSetup:remove() end
