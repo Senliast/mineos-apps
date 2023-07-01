@@ -10,7 +10,7 @@
 
 	errorMassiv = {
 		redstoneCardNeeded = "redstone card is required",
-		startInterrupted = "Start of the programm has been interrupted. Please fix the problems above and try again",
+		startInterrupted = "Start of the programm has been interrupted. Please fix the following problems and try again",
 		canWorkPropOnlyIfInApp = "The app can work properly only if installed to /Applications. Please move the app in this location and try again.",
 		settingsFCorrupted = "settings file is corrupted",
 		autolockTInvalid = "autolock time value is invalid",
