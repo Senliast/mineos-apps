@@ -24,6 +24,5 @@ if (fs.exists(paths.user.applicationData .. "Lock/")) then
 		trustedUser = settingsOld[6],
 		versionCode = versionCode
 	}
-	settingsNew.versionCode = versionCode
 	fs.writeTable(paths.user.applicationData .. "DoorLock/Config.cfg", settingsNew)
 end
