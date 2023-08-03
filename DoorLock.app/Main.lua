@@ -1,5 +1,5 @@
 -- DoorLock v.1.4 by Senliast
--- GitHub: https://github.com/Senliast/MineOSApps
+-- GitHub: https://github.com/Senliast/mineos-apps
 -- 
 -- A lock that supports code or fingerprint. You can configure output of a
 -- redstone signal on different sites depending on if the authentication
